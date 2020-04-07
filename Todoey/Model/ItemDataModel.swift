@@ -8,9 +8,3 @@
 
 import UIKit
 
-class ItemDataModel: Codable {
-    
-    var name: String = ""
-    var done: Bool = false
-    
-}

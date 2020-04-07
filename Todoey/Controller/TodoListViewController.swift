@@ -7,20 +7,22 @@
 //
 
 import UIKit
+import CoreData
 
 class TodoListViewController: UITableViewController {
     
 
     
-    var itemArray = [ItemDataModel]()
+    var itemArray = [Item]()
     
     let defaults = UserDefaults.standard
-    
-    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
 
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
                 
             loadItems()
 
@@ -83,8 +85,9 @@ class TodoListViewController: UITableViewController {
         alert.addAction(UIAlertAction(title: "Add", style: UIAlertAction.Style.default, handler: { (action) in
             let textField = alert.textFields![0]
             if let text = textField.text {
-                let newItem = ItemDataModel()
+                let newItem = Item(context: self.context)
                 newItem.name = text
+                newItem.done = false
                 self.itemArray.append(newItem)
                 self.saveItems()
             }
@@ -96,13 +99,11 @@ class TodoListViewController: UITableViewController {
     
     func saveItems() {
         
-        let encoder = PropertyListEncoder()
-        
+            
         do {
-            let data = try encoder.encode(itemArray)
-            try data.write(to: dataFilePath!)
+            try context.save()
         } catch {
-            print("Error in encoding itemArray \(error)")
+            print("Error in new Item \(error)")
         }
         self.tableView.reloadData()
 
@@ -110,20 +111,13 @@ class TodoListViewController: UITableViewController {
     }
     
     func loadItems() {
-
-
-    if let data = try? Data(contentsOf:
-    dataFilePath!) {
-    let decoder = PropertyListDecoder()
-    do {
-        itemArray = try decoder.decode([ItemDataModel].self, from: data)
-
-    } catch {
-    print("Error in decoding the itemArray \(error)")
-    }
-
-    }
         
+        let request : NSFetchRequest<Item> = Item.fetchRequest()
+        do {
+        itemArray = try context.fetch(request)
+        } catch {
+            print("Error in fetching new Item \(error)")
+        }
     }
     
 

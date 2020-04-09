@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		905CCDAA243DFAA3003E9530 /* CategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 905CCDA9243DFAA3003E9530 /* CategoryViewController.swift */; };
 		90878B99243A311C008F9562 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90878B98243A311C008F9562 /* Constants.swift */; };
 		90878B9D243B6404008F9562 /* ItemDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90878B9C243B6403008F9562 /* ItemDataModel.swift */; };
 		90878BA3243BE04C008F9562 /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 90878BA1243BE04B008F9562 /* DataModel.xcdatamodeld */; };
@@ -18,6 +19,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		905CCDA9243DFAA3003E9530 /* CategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryViewController.swift; sourceTree = "<group>"; };
 		90878B98243A311C008F9562 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		90878B9C243B6403008F9562 /* ItemDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemDataModel.swift; sourceTree = "<group>"; };
 		90878BA2243BE04B008F9562 /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
@@ -61,6 +63,7 @@
 		90878BA0243B6487008F9562 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				905CCDA9243DFAA3003E9530 /* CategoryViewController.swift */,
 				EB2BE4FD239524DB00FB933B /* TodoListViewController.swift */,
 			);
 			path = Controller;
@@ -172,6 +175,7 @@
 				90878BA3243BE04C008F9562 /* DataModel.xcdatamodeld in Sources */,
 				EB2BE4FE239524DB00FB933B /* TodoListViewController.swift in Sources */,
 				EB2BE4FA239524DB00FB933B /* AppDelegate.swift in Sources */,
+				905CCDAA243DFAA3003E9530 /* CategoryViewController.swift in Sources */,
 				90878B99243A311C008F9562 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -11,20 +11,46 @@ import CoreData
 
 class TodoListViewController: UITableViewController {
     
-
-    
     var itemArray = [Item]()
     
+    let searchController = UISearchController(searchResultsController: nil)
+    
+    var isSearchBarEmpty: Bool {
+        return searchController.searchBar.text?.isEmpty ?? true
+    }
+    
+    var isFiltering: Bool {
+        return searchController.isActive && !isSearchBarEmpty
+    }
+    
     let defaults = UserDefaults.standard
+    
+    var selectedCategory : Category? {
+        didSet {
+            loadItems()
+        }
+    }
 
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
     override func viewDidLoad() {
         super.viewDidLoad()
+                
+        searchController.searchResultsUpdater = self
+        
+        searchController.obscuresBackgroundDuringPresentation = false
+        
+        searchController.searchBar.placeholder = "Search"
+        
+        navigationItem.searchController = searchController
+
+        
+        searchController.searchBar.tintColor = .gray
+        
+        definesPresentationContext = true
         
         print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
-                
-            loadItems()
+        
 
     }
     
@@ -38,9 +64,7 @@ class TodoListViewController: UITableViewController {
         let task = itemArray[indexPath.row]
         
         let cell = tableView.dequeueReusableCell(withIdentifier: K.cellIdentifier, for: indexPath)
-        
-        //cell.textLabel?.text = task
-        
+                
         cell.textLabel?.text = task.name
         cell.tintColor = .systemTeal
         
@@ -88,6 +112,7 @@ class TodoListViewController: UITableViewController {
                 let newItem = Item(context: self.context)
                 newItem.name = text
                 newItem.done = false
+                newItem.parentCategory = self.selectedCategory
                 self.itemArray.append(newItem)
                 self.saveItems()
             }
@@ -110,14 +135,22 @@ class TodoListViewController: UITableViewController {
         
     }
     
-    func loadItems() {
+    func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest(), predicate: NSPredicate? = nil) {
         
-        let request : NSFetchRequest<Item> = Item.fetchRequest()
+        let categoryPredicate = NSPredicate(format: "parentCategory.name MATCHES %@", selectedCategory!.name!)
+        
+        if let additionalPredicate = predicate {
+        request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicate, additionalPredicate])
+        } else {
+            request.predicate = categoryPredicate
+        }
+        
         do {
         itemArray = try context.fetch(request)
         } catch {
             print("Error in fetching new Item \(error)")
         }
+        tableView.reloadData()
     }
     
 
@@ -125,6 +158,38 @@ class TodoListViewController: UITableViewController {
    
     
     }
+
+extension TodoListViewController: UISearchBarDelegate, UISearchResultsUpdating {
+    
+    func updateSearchResults(for searchController: UISearchController) {
+        
+        let searchBar = searchController.searchBar
+        
+        if isFiltering {
+            filterContentForSearchBar(searchBar)
+        } else {
+            loadItems()
+        }
+        
+    }
+    
+    
+    
+    func filterContentForSearchBar(_ searchBar: UISearchBar) {
+        
+        let itemRequest : NSFetchRequest<Item> = Item.fetchRequest()
+    
+        let predicate = NSPredicate(format: "name CONTAINS[cd] %@", searchBar.text!)
+        
+        itemRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
+        
+        loadItems(with: itemRequest, predicate: predicate)
+
+        
+    }
+    
+    
+}
 
 
 
